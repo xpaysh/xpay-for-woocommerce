@@ -11,6 +11,24 @@ release metadata at <https://install.xpay.sh/woocommerce/manifest.json>.
 
 ## [Unreleased]
 
+## [0.1.2] — 2026-05-14
+
+### Changed (WordPress.org submission compliance — Tier 0)
+
+- **Plugin slug renamed** from `xpay-woocommerce` to `xpay-for-woocommerce`. Required for WordPress.org Guideline 17 (trademark — non-Automattic / non-WooCommerce vendors cannot have a slug starting with `woocommerce`). Plugin name "xpay for WooCommerce" already uses the canonical `for X` form, so display branding is unchanged.
+- **Telemetry is now opt-in, not opt-out.** Required for WordPress.org Guideline 7 (informed consent for external server contact). On first activation an admin notice asks the merchant to choose. Default is OFF. Sysadmin override `define( 'XPAY_WC_TELEMETRY', false )` still hard-disables.
+- Main plugin file renamed `xpay-woocommerce.php` → `xpay-for-woocommerce.php`. Text Domain updated to `xpay-for-woocommerce`. All admin URLs (`?page=xpay-for-woocommerce`) follow.
+- HTTP User-Agent updated to `xpay-for-woocommerce/{version}`.
+
+### Added
+
+- `Xpay_Consent` admin-notice subsystem — shows once on first activation, never reappears after the merchant chooses.
+- **Settings → xpay → Privacy** panel — merchant can change their telemetry choice any time without editing wp-config.
+- readme.txt `== External services ==` section listing every endpoint the plugin contacts, what data goes where, and links to terms + privacy policy. Required for WordPress.org Guideline 6.
+- readme.txt `== Privacy ==` section detailing exactly what is and isn't sent, and how to opt out / request deletion.
+- readme.txt `== Screenshots ==` placeholder captions (assets to be added before WP.org submission).
+- readme.txt `== Upgrade Notice ==` block for 0.1.2.
+
 ## [0.1.1] — 2026-05-14
 
 ### Added

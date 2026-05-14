@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
 
 require_once XPAY_WC_PATH . 'includes/class-xpay-client.php';
 require_once XPAY_WC_PATH . 'includes/class-xpay-telemetry.php';
+require_once XPAY_WC_PATH . 'includes/class-xpay-consent.php';
 require_once XPAY_WC_PATH . 'includes/class-xpay-rest.php';
 require_once XPAY_WC_PATH . 'includes/class-xpay-robots.php';
 require_once XPAY_WC_PATH . 'includes/class-xpay-schema.php';
@@ -39,6 +40,9 @@ class Xpay_Plugin {
 		Xpay_Webhooks::instance();
 		Xpay_Settings::instance();
 		Xpay_Widget::instance();
+		if ( is_admin() ) {
+			Xpay_Consent::instance();
+		}
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 	}
@@ -53,12 +57,12 @@ class Xpay_Plugin {
 
 	public function woocommerce_missing_notice() {
 		echo '<div class="notice notice-error"><p>';
-		esc_html_e( 'xpay for WooCommerce requires WooCommerce to be installed and active.', 'xpay-woocommerce' );
+		esc_html_e( 'xpay for WooCommerce requires WooCommerce to be installed and active.', 'xpay-for-woocommerce' );
 		echo '</p></div>';
 	}
 
 	public function load_textdomain() {
-		load_plugin_textdomain( 'xpay-woocommerce', false, dirname( plugin_basename( XPAY_WC_FILE ) ) . '/languages' );
+		load_plugin_textdomain( 'xpay-for-woocommerce', false, dirname( plugin_basename( XPAY_WC_FILE ) ) . '/languages' );
 	}
 
 	public static function on_activate() {

@@ -1,15 +1,18 @@
 <?php
 /**
- * Lifecycle telemetry. Fires non-blocking, fire-and-forget POSTs to the xpay
- * backend so we can see install / connect / finalize / error events in the
- * funnel.
+ * Lifecycle telemetry. Opt-in only.
  *
  * Hard guarantees:
  *   - Never blocks the request (wp_remote_post with blocking=false, timeout=1).
  *   - Never throws. All failure paths swallow silently.
+ *   - Never fires until the merchant clicks "Enable" on the first-activation
+ *     admin notice. (WordPress.org Guideline 7 — informed consent.)
  *   - Never sends PII beyond what the merchant already shared during onboarding
- *     (site_url + admin email + plugin version + WC/WP/PHP versions).
- *   - Honours an opt-out: `define( 'XPAY_WC_TELEMETRY', false )` in wp-config.
+ *     (site_url + plugin version + WP / WC / PHP versions).
+ *   - Sysadmins can hard-disable with `define( 'XPAY_WC_TELEMETRY', false )` in
+ *     wp-config.php (this overrides any opt-in choice).
+ *
+ * What we send and when is documented under "External services" in readme.txt.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -17,10 +20,29 @@ defined( 'ABSPATH' ) || exit;
 class Xpay_Telemetry {
 
 	const ENDPOINT_PATH = '/v1/events';
+	const OPTION_OPT_IN = 'xpay_wc_telemetry_opt_in'; // 'yes' | 'no' | '' (undecided)
+
+	public static function is_enabled() {
+		if ( defined( 'XPAY_WC_TELEMETRY' ) && false === XPAY_WC_TELEMETRY ) {
+			return false;
+		}
+		return 'yes' === get_option( self::OPTION_OPT_IN, '' );
+	}
+
+	public static function set_opt_in( $value ) {
+		$value = ( 'yes' === $value ) ? 'yes' : 'no';
+		update_option( self::OPTION_OPT_IN, $value );
+		update_option( 'xpay_wc_telemetry_decided_at', time() );
+	}
+
+	public static function has_decided() {
+		$v = get_option( self::OPTION_OPT_IN, '' );
+		return 'yes' === $v || 'no' === $v;
+	}
 
 	public static function track( $event, $props = array() ) {
 		try {
-			if ( defined( 'XPAY_WC_TELEMETRY' ) && false === XPAY_WC_TELEMETRY ) {
+			if ( ! self::is_enabled() ) {
 				return;
 			}
 			if ( ! is_string( $event ) || '' === $event ) {
@@ -51,7 +73,7 @@ class Xpay_Telemetry {
 					'sslverify' => true,
 					'headers'   => array(
 						'Content-Type' => 'application/json',
-						'User-Agent'   => 'xpay-woocommerce/' . XPAY_WC_VERSION . '; ' . home_url( '/' ),
+						'User-Agent'   => 'xpay-for-woocommerce/' . XPAY_WC_VERSION . '; ' . home_url( '/' ),
 						'X-Xpay-Site'  => home_url( '/' ),
 					),
 					'body'      => wp_json_encode( $payload ),

@@ -118,7 +118,7 @@ class Xpay_REST {
 			),
 			'platform'     => array(
 				'kind'    => 'woocommerce',
-				'plugin'  => 'xpay-woocommerce',
+				'plugin'  => 'xpay-for-woocommerce',
 				'version' => XPAY_WC_VERSION,
 			),
 			'catalog'      => array(
