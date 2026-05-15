@@ -11,6 +11,18 @@ release metadata at <https://install.xpay.sh/woocommerce/manifest.json>.
 
 ## [Unreleased]
 
+## [0.1.8] — 2026-05-15
+
+### Added
+
+- **Documentation site at [docs.xpay.sh/products/woocommerce](https://docs.xpay.sh/products/woocommerce)** — six new pages: Overview, Installing, WooCommerce REST API keys, Connecting your store, Privacy & telemetry, Audit readiness checklist, Troubleshooting. Source lives in `DEVELOPER_DOCS/xpay-docs/src/content/en/products/woocommerce/` (separate repo, deployed via Vercel).
+- readme.txt now backlinks the docs at every relevant moment — install instructions link to the install walkthrough, the connect flow links to the keys page, privacy section links to the plain-English version, etc.
+
+### Changed
+
+- **Punchier Description hero** — leads with buyer-side framing ("Your next customer is asking ChatGPT, not Google") instead of an abstract industry claim. Description now opens with a concrete user behaviour the merchant immediately recognizes.
+- Pricing link updated to `https://www.xpay.sh/pricing/?tab=agentic-commerce` (readme, terms.html, preview listing — all 5 occurrences).
+
 ## [0.1.7] — 2026-05-15
 
 ### Changed

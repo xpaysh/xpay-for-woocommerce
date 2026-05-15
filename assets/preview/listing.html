@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>xpay for WooCommerce — WordPress plugin (preview)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --wp-blue:#3858e9; --wp-bg:#f6f7f7; --wp-fg:#1d2327; --wp-muted:#646970; --wp-border:#c3c4c7; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif; background:var(--wp-bg); color:var(--wp-fg); }
+  .wp-header { background:#fff; border-bottom:1px solid var(--wp-border); padding:14px 32px; display:flex; align-items:center; gap:18px; }
+  .wp-header .logo { font-weight:700; font-size:20px; color:var(--wp-fg); }
+  .wp-header nav a { color:var(--wp-muted); text-decoration:none; margin-right:18px; font-size:14px; }
+  .wp-header .search { margin-left:auto; padding:6px 12px; border:1px solid var(--wp-border); border-radius:4px; min-width:240px; background:var(--wp-bg); color:var(--wp-muted); }
+  .preview-banner { background:#fff8e6; border-bottom:2px solid #d97706; padding:8px 32px; font-size:13px; color:#92400e; }
+  .preview-banner strong { color:#7c2d12; }
+  .listing { max-width:1180px; margin:0 auto; padding:24px 32px 64px; }
+  .banner-row { background:#fff; border:1px solid var(--wp-border); border-radius:4px; overflow:hidden; margin-bottom:24px; }
+  .banner-row img { width:100%; display:block; }
+  .head-row { display:grid; grid-template-columns:140px 1fr 280px; gap:24px; align-items:center; background:#fff; border:1px solid var(--wp-border); border-radius:4px; padding:24px; margin-bottom:24px; }
+  .icon-cell img { width:128px; height:128px; border-radius:8px; }
+  .title-cell h1 { margin:0 0 4px; font-size:28px; font-weight:700; line-height:1.15; }
+  .title-cell .by { color:var(--wp-muted); font-size:14px; }
+  .title-cell .by a { color:var(--wp-blue); text-decoration:none; }
+  .stars { color:#dba617; font-size:18px; margin-top:6px; letter-spacing:2px; }
+  .rating-meta { color:var(--wp-muted); font-size:13px; margin-top:4px; }
+  .cta-cell { text-align:right; }
+  .btn { display:inline-block; background:var(--wp-blue); color:#fff; padding:10px 22px; border-radius:4px; text-decoration:none; font-weight:600; font-size:14px; }
+  .btn.ghost { background:#fff; border:1px solid var(--wp-blue); color:var(--wp-blue); margin-right:6px; }
+  .tabs { display:flex; gap:0; border-bottom:1px solid var(--wp-border); margin-bottom:0; background:#fff; padding:0 24px; border-radius:4px 4px 0 0; }
+  .tabs a { padding:14px 18px; color:var(--wp-muted); text-decoration:none; font-size:14px; font-weight:500; border-bottom:3px solid transparent; }
+  .tabs a.active { color:var(--wp-fg); border-bottom-color:var(--wp-blue); }
+  .main { display:grid; grid-template-columns:1fr 320px; gap:24px; }
+  .col-main { background:#fff; border:1px solid var(--wp-border); border-top:0; border-radius:0 0 4px 4px; padding:28px 32px 36px; }
+  .col-side > div { background:#fff; border:1px solid var(--wp-border); border-radius:4px; padding:18px 20px; margin-bottom:16px; }
+  .col-side h3 { margin:0 0 12px; font-size:13px; text-transform:uppercase; letter-spacing:.04em; color:var(--wp-muted); font-weight:600; }
+  .col-side .meta-row { display:flex; justify-content:space-between; font-size:13px; padding:6px 0; border-bottom:1px solid #ebebeb; }
+  .col-side .meta-row:last-child { border-bottom:0; }
+  .col-side .meta-row .l { color:var(--wp-muted); }
+  .col-side .meta-row .r { color:var(--wp-fg); font-weight:500; }
+  .col-side .tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .col-side .tag { background:#e8f3ff; color:var(--wp-blue); padding:4px 10px; border-radius:12px; font-size:12px; text-decoration:none; }
+  .col-main h2 { margin-top:32px; margin-bottom:14px; font-size:20px; font-weight:600; padding-bottom:6px; border-bottom:1px solid #ebebeb; }
+  .col-main h2:first-child { margin-top:0; }
+  .col-main h3 { margin-top:24px; font-size:15px; font-weight:600; color:#3c434a; }
+  .col-main h4 { font-size:14px; font-weight:600; margin-top:16px; margin-bottom:4px; color:#3c434a; }
+  .col-main p, .col-main li { line-height:1.7; font-size:15px; }
+  .col-main code { background:#f0f0f1; padding:2px 6px; border-radius:3px; font:13px/1.4 SF Mono,Menlo,Consolas,monospace; }
+  .col-main a { color:var(--wp-blue); }
+  .col-main strong { font-weight:600; }
+  .col-main ul { padding-left:22px; }
+  .screenshots { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px; }
+  .ss { background:#000; border-radius:4px; overflow:hidden; border:1px solid #ebebeb; }
+  .ss img { width:100%; display:block; }
+  .ss-caption { padding:10px 14px; font-size:13px; background:#fff; color:var(--wp-fg); border-top:1px solid #ebebeb; }
+  details { margin:8px 0; padding:12px 16px; border:1px solid #ebebeb; border-radius:4px; background:#fafbfc; }
+  details summary { cursor:pointer; font-weight:600; font-size:14px; color:var(--wp-fg); }
+  details[open] summary { margin-bottom:8px; }
+  hr { border:0; border-top:1px solid #ebebeb; margin:24px 0; }
+  .blockquote-like { background:#f0f6ff; border-left:4px solid var(--wp-blue); padding:14px 16px; margin:14px 0; font-size:14px; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW.</strong> Local mock of the WordPress.org listing for <code>xpay-for-woocommerce</code> v0.1.8. Real listing layout at <code>wordpress.org/plugins/xpay-for-woocommerce/</code> once approved. Rendered from <code>readme.txt</code> + <code>assets/</code>.
+</div>
+
+<header class="wp-header">
+  <div class="logo">WordPress.org</div>
+  <nav>
+    <a href="#">Showcase</a><a href="#">Learn</a><a href="#">Themes</a><a href="#">Patterns</a>
+    <a href="#" style="color:var(--wp-fg);font-weight:600;">Plugins</a>
+    <a href="#">Mobile</a><a href="#">Support</a>
+  </nav>
+  <span class="search">Search plugins…</span>
+</header>
+
+<main class="listing">
+
+  <!-- Banner -->
+  <div class="banner-row">
+    <img src="../banner-1544x500.png" alt="xpay for WooCommerce banner">
+  </div>
+
+  <!-- Title row -->
+  <div class="head-row">
+    <div class="icon-cell"><img src="../icon-256x256.png" alt="xpay for WooCommerce icon"></div>
+    <div class="title-cell">
+      <h1>xpay for WooCommerce</h1>
+      <div class="by">By <a href="#">xpay</a></div>
+      <div class="stars">☆☆☆☆☆ <span class="rating-meta">(no ratings yet — brand new plugin)</span></div>
+    </div>
+    <div class="cta-cell">
+      <a class="btn ghost" href="https://install.xpay.sh/woocommerce/latest.zip">Download</a>
+      <a class="btn" href="#">Add to Site</a>
+      <div class="rating-meta" style="margin-top:8px;">Free until first AI-driven sale</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <a class="active" href="#description">Details</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#installation">Installation</a>
+    <a href="#development">Development</a>
+    <a href="#support">Support</a>
+  </div>
+  <script>
+    // Match WP.org behaviour: tabs are anchor links to in-page sections.
+    document.querySelectorAll('.tabs a').forEach(a => {
+      a.addEventListener('click', e => {
+        document.querySelectorAll('.tabs a').forEach(x => x.classList.remove('active'));
+        a.classList.add('active');
+      });
+    });
+  </script>
+
+  <div class="main">
+    <div class="col-main">
+
+      <h2 id="description">Description</h2>
+      <p><strong>Your next customer is asking ChatGPT, not Google.</strong> They're shopping by typing "find me a cordless drill under $80 that ships in 2 days" into a chat box — and quietly walking away from any store the AI can't see. Right now, that's most WooCommerce stores.</p>
+      <p><strong>xpay for WooCommerce makes your store visible to ChatGPT, Claude, Gemini and Perplexity</strong> in five minutes flat — no theme changes, no replatforming, no new payment processor. Your existing checkout stays exactly as it is; xpay just makes sure you're the answer the AI gives.</p>
+      <p style="background:#f0f6ff;padding:14px 16px;border-radius:6px;border-left:3px solid var(--wp-blue);font-size:14px;line-height:1.7;">
+        📘 <strong>Full setup guide with screenshots:</strong> <a href="https://docs.xpay.sh/products/woocommerce">docs.xpay.sh/products/woocommerce</a><br>
+        🌐 <strong>Plugin home:</strong> <a href="https://www.xpay.sh/merchants/woocommerce/">www.xpay.sh/merchants/woocommerce</a><br>
+        🔓 <strong>Source on GitHub:</strong> <a href="https://github.com/xpaysh/xpay-for-woocommerce">github.com/xpaysh/xpay-for-woocommerce</a>
+      </p>
+
+      <h3>What it does</h3>
+      <ul>
+        <li><strong>Publishes a public, agent-readable product feed</strong> — your full catalog with live prices and stock, hosted on xpay's CDN (no extra load on your origin).</li>
+        <li><strong>Adds AI-shopping JSON-LD</strong> — <code>Product</code>, <code>Offer</code>, <code>AggregateOffer</code>, <code>BuyAction</code> and <code>ItemList</code> schemas on product pages, shop archive and home page. Detects existing schema from Yoast / Rank Math / WooCommerce core and only fills the gaps.</li>
+        <li><strong>Serves the agent discovery files</strong> — <code>/llms.txt</code> and <code>/.well-known/agentic-commerce.json</code> on your own domain.</li>
+        <li><strong>Allows the right bots</strong> — GPTBot, ChatGPT-User, OAI-SearchBot, ClaudeBot, Claude-User, Claude-SearchBot, PerplexityBot, Perplexity-User, Google-Extended, Applebot-Extended and CCBot. Never overrides your existing robots.txt rules.</li>
+        <li><strong>Cart deep-link</strong> — AI agents create a one-click "Buy" link that pre-fills your existing WooCommerce cart and lands the buyer on your existing checkout. Orders are tagged with <code>_xpay_agent_attribution</code>.</li>
+        <li><strong>Live inventory</strong> — webhook-driven catalog refresh on every product / stock change (debounced 30s), plus an hourly safety-net poll.</li>
+      </ul>
+
+      <h3>What it doesn't do</h3>
+      <ul>
+        <li><strong>It doesn't touch your checkout.</strong> Stripe / WooPayments / PayPal / Square / whatever you already use — payment runs through them, unchanged. Your payout schedule is unchanged.</li>
+        <li><strong>It doesn't see your customers.</strong> No buyer names, emails, addresses, IPs, payment cards, order line items, refunds, or PII of any kind passes through xpay. Ever. The plugin is non-custodial.</li>
+        <li><strong>It doesn't require a new account or contract</strong> to start. Free until your first AI-attributable sale; pricing kicks in after that. <a href="https://www.xpay.sh/pricing/?tab=agentic-commerce">See pricing</a>.</li>
+        <li><strong>It doesn't slow down your site.</strong> The JSON-LD block is tiny and cached; the catalog feed is served from xpay's CDN, not your origin.</li>
+      </ul>
+
+      <h3>Five-minute install flow</h3>
+      <ol>
+        <li>Install the plugin from this directory or upload the zip.</li>
+        <li>Activate. You'll be taken to <strong>Settings → xpay</strong>.</li>
+        <li>Click <strong>Connect store</strong>. A new tab opens at app.xpay.sh, where you grant a read-only WooCommerce REST API key.</li>
+        <li>Your catalog goes live on AI surfaces within about 10 minutes. The plugin's built-in audit-readiness checklist turns green as each piece confirms.</li>
+      </ol>
+
+      <h3>Compatibility</h3>
+      <ul>
+        <li>WooCommerce 7.0+ on WordPress 6.2+ and PHP 7.4+.</li>
+        <li>Declares compatibility with WooCommerce High-Performance Order Storage (HPOS) and Cart/Checkout Blocks.</li>
+        <li>Works alongside Yoast SEO, Rank Math, WooCommerce Blocks, WooPayments, Stripe for WooCommerce, and the standard Storefront / Astra / Divi / Elementor themes.</li>
+      </ul>
+
+      <h3>Privacy and consent</h3>
+      <ul>
+        <li><strong>Anonymous lifecycle telemetry is off by default.</strong> On first activation a single admin notice asks once. Pick "No thanks" and the plugin never contacts our backend for analytics. Pick "Enable" and you can change your mind any time under <strong>Settings → xpay → Privacy</strong>. System-wide opt-out via <code>define( 'XPAY_WC_TELEMETRY', false );</code> in <code>wp-config.php</code>.</li>
+        <li><strong>Full data disclosure</strong> at <a href="https://install.xpay.sh/woocommerce/privacy.html">install.xpay.sh/woocommerce/privacy.html</a> — every byte the plugin sends, when it sends it, how to opt out, how to request deletion.</li>
+      </ul>
+
+      <h3>Source code and contributing</h3>
+      <p>The plugin source is published under GPLv2-or-later. Public repo and issue tracker: <a href="https://github.com/xpaysh/xpay-for-woocommerce">github.com/xpaysh/xpay-for-woocommerce</a>. You can fork, modify, redistribute, and self-host without paying anything.</p>
+
+      <h2 id="screenshots">Screenshots</h2>
+      <div class="screenshots">
+        <div class="ss"><img src="../screenshot-1.png" alt="Screenshot 1"><div class="ss-caption">1. One-click connect — your existing WooCommerce checkout stays untouched.</div></div>
+        <div class="ss"><img src="../screenshot-2.png" alt="Screenshot 2"><div class="ss-caption">2. Eight audit checks, all green: catalog feed, JSON-LD, llms.txt, well-known, robots, BuyAction, cart deeplink, fresh inventory.</div></div>
+        <div class="ss"><img src="../screenshot-3.png" alt="Screenshot 3"><div class="ss-caption">3. Your catalog, live on agent-feed.xpay.sh — real prices, real stock.</div></div>
+        <div class="ss"><img src="../screenshot-4.png" alt="Screenshot 4"><div class="ss-caption">4. AI chat → your existing checkout.</div></div>
+        <div class="ss"><img src="../screenshot-5.png" alt="Screenshot 5"><div class="ss-caption">5. JSON-LD on every product page including BuyAction.</div></div>
+      </div>
+
+      <h2 id="installation">Installation</h2>
+      <h4>From the WordPress.org plugin directory</h4>
+      <ol>
+        <li>In your WordPress admin, go to <strong>Plugins → Add New</strong>.</li>
+        <li>Search for "xpay for WooCommerce".</li>
+        <li>Click <strong>Install Now</strong>, then <strong>Activate</strong>.</li>
+        <li>You'll be redirected to <strong>Settings → xpay</strong>. Click <strong>Connect store</strong>.</li>
+        <li>Approve the WooCommerce REST API permissions in the new tab that opens at app.xpay.sh.</li>
+      </ol>
+
+      <h4>System requirements</h4>
+      <ul>
+        <li>WordPress 6.2 or higher</li>
+        <li>WooCommerce 7.0 or higher</li>
+        <li>PHP 7.4 or higher</li>
+        <li>SSL (<code>https://</code>) on the store domain</li>
+      </ul>
+
+      <h2 id="faq">Frequently Asked Questions</h2>
+
+      <details open><summary>Does this slow down my site?</summary><p>No. The plugin emits a small <code>&lt;script type="application/ld+json"&gt;</code> block in <code>&lt;head&gt;</code> on product pages, shop and home (only when no other plugin has already emitted equivalent schema). The discovery files are served from <code>wp-content</code> via a single rewrite rule with no DB query. The catalog feed itself is hosted on xpay's CDN, not your origin.</p></details>
+
+      <details><summary>Does xpay see my customers' payment info?</summary><p>No. Payment runs through your existing WooCommerce gateway (Stripe / WooPayments / PayPal / Square / etc.). xpay never touches your checkout, your cards, your buyer PII, or your refund flow.</p></details>
+
+      <details><summary>What if I already have Yoast SEO / Rank Math emitting Product schema?</summary><p>xpay detects the existing schema at runtime and only adds the bits it's missing — typically <code>BuyAction</code> on product pages and <code>ItemList</code> on the homepage. No duplicate schema is emitted.</p></details>
+
+      <details><summary>What does the plugin send to xpay's servers, and when?</summary><p>Two data paths: (1) Catalog sync after Connect — public product fields. (2) Anonymous lifecycle telemetry, opt-in, off by default. Full disclosure: <a href="https://install.xpay.sh/woocommerce/privacy.html">install.xpay.sh/woocommerce/privacy.html</a>.</p></details>
+
+      <details><summary>How do I uninstall cleanly?</summary><p><strong>Plugins → Deactivate → Delete</strong>. The bundled <code>uninstall.php</code> removes every option the plugin wrote.</p></details>
+
+      <details><summary>How do I opt out of anonymous telemetry after I already enabled it?</summary><p><strong>Settings → xpay → Privacy → Turn off</strong>. Or define <code>XPAY_WC_TELEMETRY</code> to <code>false</code> in <code>wp-config.php</code>.</p></details>
+
+      <details><summary>My host blocks /.well-known/ — can the discovery file still work?</summary><p>Yes. The plugin also serves the discovery file at <code>https://yoursite.com/?xpay_route=acp</code>. AI shoppers that respect the <code>Link</code> header find this fallback automatically.</p></details>
+
+      <details><summary>I have multiple WooCommerce stores. Do I install xpay on each?</summary><p>Yes. Each store gets its own merchant slug and its own catalog feed.</p></details>
+
+      <details><summary>Is the source code available?</summary><p>Yes. GPLv2-or-later, public repo at <a href="https://github.com/xpaysh/xpay-for-woocommerce">github.com/xpaysh/xpay-for-woocommerce</a>.</p></details>
+
+      <details><summary>How much does this cost?</summary><p>Free until your first AI-attributable sale. After that, pricing starts at 1% of AI-attributable order value. See <a href="https://www.xpay.sh/pricing/?tab=agentic-commerce">www.xpay.sh/pricing/</a>.</p></details>
+
+      <details><summary>Does xpay work with WooCommerce Subscriptions / Bookings / Memberships?</summary><p>The plugin publishes simple, variable, and grouped products in v0.1. Subscriptions, bookings, and memberships are on the roadmap.</p></details>
+
+      <details><summary>I have a question that isn't answered here.</summary><p>Email merchants@xpay.sh or open an issue at <a href="https://github.com/xpaysh/xpay-for-woocommerce/issues">github.com/xpaysh/xpay-for-woocommerce/issues</a>.</p></details>
+
+      <h2 id="reviews">Reviews</h2>
+      <div class="blockquote-like">No reviews yet. (This section populates after the plugin goes live on WP.org and merchants leave star ratings + comments.)</div>
+
+      <h2 id="development">Development</h2>
+      <p>Plugin source is GPLv2-or-later and lives on GitHub:</p>
+      <ul>
+        <li><strong>Plugin source:</strong> <a href="https://github.com/xpaysh/xpay-for-woocommerce">github.com/xpaysh/xpay-for-woocommerce</a></li>
+        <li><strong>Latest commits:</strong> <a href="https://github.com/xpaysh/xpay-for-woocommerce/commits/main">commits/main</a></li>
+        <li><strong>Releases / tags:</strong> <a href="https://github.com/xpaysh/xpay-for-woocommerce/releases">releases</a></li>
+        <li><strong>Open issues:</strong> <a href="https://github.com/xpaysh/xpay-for-woocommerce/issues">issues</a> · <a href="https://github.com/xpaysh/xpay-for-woocommerce/issues/new">new issue</a></li>
+        <li><strong>Pull requests welcome:</strong> read <a href="https://github.com/xpaysh/xpay-for-woocommerce/blob/main/README.md">README.md</a> first</li>
+      </ul>
+      <p>Development build (latest from <code>main</code>, may be unstable) is auto-published to <a href="https://install.xpay.sh/woocommerce/latest.zip">install.xpay.sh/woocommerce/latest.zip</a> on every commit. The stable zip available via WP-admin auto-updates is the latest WP.org-tagged version.</p>
+
+      <h2 id="support">Support</h2>
+      <p>Three ways to get help, ranked by best fit:</p>
+      <ol>
+        <li><strong>Read the documentation</strong> — <a href="https://docs.xpay.sh/products/woocommerce">docs.xpay.sh/products/woocommerce</a> covers install, WC REST API keys, connecting, privacy, the audit readiness checklist, and a full troubleshooting guide.</li>
+        <li><strong>Open a GitHub issue</strong> — <a href="https://github.com/xpaysh/xpay-for-woocommerce/issues/new">github.com/xpaysh/xpay-for-woocommerce/issues/new</a>. Best for reproducible bugs; we triage publicly so other merchants benefit from the resolution.</li>
+        <li><strong>Email merchants@xpay.sh</strong> — best for store-specific or sensitive questions (e.g. data deletion, billing, key rotation). For privacy or legal questions specifically: <a href="mailto:privacy@xpay.sh">privacy@xpay.sh</a>.</li>
+      </ol>
+      <p>We respond within one business day. There's no paid support tier — every merchant gets the same response time.</p>
+
+      <h2 id="changelog">Changelog</h2>
+      <h4>0.1.7</h4>
+      <p>GitHub repo flipped public. Restored repo link references in readme.</p>
+      <h4>0.1.6</h4>
+      <p>Removed GitHub link references from readme (repo was private — now reverted in 0.1.7).</p>
+      <h4>0.1.5</h4>
+      <p>Query-arg fallback for the discovery file on hosts that intercept /.well-known/. Post-activation redirect now fires on any activation when not yet connected.</p>
+      <h4>0.1.4</h4>
+      <p>WC HPOS + Cart/Checkout Blocks compatibility declared. First-activation redirect to Settings → xpay. Privacy + Terms pages live.</p>
+      <h4>0.1.3</h4>
+      <p>PHPCS WordPress-standard clean: 0 errors / 1 cosmetic warning. <code>phpcs.xml.dist</code> ruleset added. <code>.pot</code> generated. WP.org listing assets.</p>
+      <h4>0.1.2</h4>
+      <p>Slug renamed <code>xpay-woocommerce</code> → <code>xpay-for-woocommerce</code> (Guideline 17). Telemetry now opt-in (Guideline 7).</p>
+      <h4>0.1.1</h4>
+      <p>Fire-and-forget lifecycle telemetry pipe.</p>
+      <h4>0.1.0</h4>
+      <p>Initial release.</p>
+
+    </div>
+
+    <div class="col-side">
+
+      <div>
+        <h3>Plugin info</h3>
+        <div class="meta-row"><span class="l">Version</span><span class="r">0.1.7</span></div>
+        <div class="meta-row"><span class="l">Last updated</span><span class="r">2026-05-15</span></div>
+        <div class="meta-row"><span class="l">Active installations</span><span class="r">Fewer than 10</span></div>
+        <div class="meta-row"><span class="l">WordPress version</span><span class="r">6.2 or higher</span></div>
+        <div class="meta-row"><span class="l">Tested up to</span><span class="r">6.7</span></div>
+        <div class="meta-row"><span class="l">PHP version</span><span class="r">7.4 or higher</span></div>
+        <div class="meta-row"><span class="l">Languages</span><span class="r">English (US)</span></div>
+      </div>
+
+      <div>
+        <h3>Tags</h3>
+        <div class="tags">
+          <a class="tag" href="#">woocommerce</a>
+          <a class="tag" href="#">ai</a>
+          <a class="tag" href="#">chatgpt</a>
+          <a class="tag" href="#">agentic commerce</a>
+          <a class="tag" href="#">llms</a>
+        </div>
+      </div>
+
+      <div>
+        <h3>Advanced view</h3>
+        <a href="https://install.xpay.sh/woocommerce/latest.zip">Download zip</a><br>
+        <a href="https://github.com/xpaysh/xpay-for-woocommerce">Browse source on GitHub</a><br>
+        <a href="https://install.xpay.sh/woocommerce/CHANGELOG.md">Full changelog</a><br>
+        <a href="https://install.xpay.sh/woocommerce/privacy.html">Privacy disclosure</a><br>
+        <a href="https://install.xpay.sh/woocommerce/terms.html">Terms of use</a>
+      </div>
+
+      <div>
+        <h3>Contributors</h3>
+        <p><a href="#">xpaysh</a></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
