@@ -6,21 +6,28 @@
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
-$option_keys = array(
-	'xpay_wc_merchant_slug',
-	'xpay_wc_api_key',
-	'xpay_wc_site_token',
-	'xpay_wc_connected_at',
-	'xpay_wc_last_sync_at',
-	'xpay_wc_last_audit',
-	'xpay_wc_settings',
-	'xpay_wc_widget_enabled',
-);
-foreach ( $option_keys as $key ) {
-	delete_option( $key );
-}
+( function () {
+	$xpay_wc_option_keys = array(
+		'xpay_wc_merchant_slug',
+		'xpay_wc_api_key',
+		'xpay_wc_site_token',
+		'xpay_wc_connected_at',
+		'xpay_wc_last_sync_at',
+		'xpay_wc_last_audit',
+		'xpay_wc_settings',
+		'xpay_wc_widget_enabled',
+		'xpay_wc_telemetry_opt_in',
+		'xpay_wc_telemetry_decided_at',
+		'xpay_wc_first_activated_at',
+		'xpay_wc_flush_rewrites',
+	);
+	foreach ( $xpay_wc_option_keys as $xpay_wc_key ) {
+		delete_option( $xpay_wc_key );
+	}
 
-delete_transient( 'xpay_wc_top_products' );
-delete_transient( 'xpay_wc_homepage_itemlist' );
+	delete_transient( 'xpay_wc_top_products' );
+	delete_transient( 'xpay_wc_homepage_itemlist' );
+	delete_transient( 'xpay_wc_post_activation_redirect' );
 
-flush_rewrite_rules();
+	flush_rewrite_rules();
+} )();

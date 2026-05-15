@@ -62,11 +62,14 @@ class Xpay_Plugin {
 	}
 
 	public function woocommerce_active() {
-		return in_array(
-			'woocommerce/woocommerce.php',
-			apply_filters( 'active_plugins', get_option( 'active_plugins', array() ) ),
-			true
-		) || class_exists( 'WooCommerce' );
+		if ( class_exists( 'WooCommerce' ) ) {
+			return true;
+		}
+		$active = (array) get_option( 'active_plugins', array() );
+		if ( is_multisite() ) {
+			$active = array_merge( $active, array_keys( (array) get_site_option( 'active_sitewide_plugins', array() ) ) );
+		}
+		return in_array( 'woocommerce/woocommerce.php', $active, true );
 	}
 
 	public function woocommerce_missing_notice() {

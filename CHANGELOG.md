@@ -11,6 +11,16 @@ release metadata at <https://install.xpay.sh/woocommerce/manifest.json>.
 
 ## [Unreleased]
 
+## [0.1.11] — 2026-05-15
+
+### Changed (Plugin Check follow-up — PrefixAllGlobals warnings cleared)
+
+- `uninstall.php` wrapped in an anonymous-closure IIFE. `$option_keys` and `$key` are no longer top-level globals — they live inside the closure scope. Added a few options + transients to the cleanup list (the consent / activation-redirect state we added in later versions).
+- `class-xpay-schema.php :: render_product()` no longer declares `global $product`. Uses a local `$xpay_product = wc_get_product( get_the_ID() )` lookup instead. Same correctness — `wc_get_product` returns the product for the current PDP — but PCP no longer mistakes the WC template global for one of ours.
+- `class-xpay-plugin.php :: woocommerce_active()` no longer wraps `get_option('active_plugins')` in `apply_filters( 'active_plugins', … )`. We were correctly reading WP core's filter, but PCP flagged it as "non-prefixed hook name invoked by plugin." Replaced with a raw option read + explicit multisite-sitewide merge — same behavior across single and multisite, no filter call. `class_exists('WooCommerce')` short-circuit retained as the first check.
+
+PHPCS: still 0 errors / 1 cosmetic warning. Released to install.xpay.sh.
+
 ## [0.1.10] — 2026-05-15
 
 ### Changed (Plugin Check (PCP) clean-up)

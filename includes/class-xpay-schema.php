@@ -45,36 +45,33 @@ class Xpay_Schema {
 	}
 
 	private function render_product() {
-		global $product;
-		if ( ! ( $product instanceof WC_Product ) ) {
-			$product = wc_get_product( get_the_ID() );
-		}
-		if ( ! $product ) {
+		$xpay_product = wc_get_product( get_the_ID() );
+		if ( ! $xpay_product instanceof WC_Product ) {
 			return;
 		}
 
-		$url   = get_permalink( $product->get_id() );
-		$price = $product->get_price();
+		$url   = get_permalink( $xpay_product->get_id() );
+		$price = $xpay_product->get_price();
 		$cur   = get_woocommerce_currency();
 
 		$offer = array(
 			'@type'           => 'Offer',
 			'priceCurrency'   => $cur,
 			'price'           => $price ? wc_format_decimal( $price, wc_get_price_decimals() ) : null,
-			'availability'    => $product->is_in_stock() ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+			'availability'    => $xpay_product->is_in_stock() ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
 			'url'             => $url,
 			'priceValidUntil' => gmdate( 'Y-12-31' ),
 		);
 
-		$buy_target = add_query_arg( 'add-to-cart', $product->get_id(), $url );
+		$buy_target = add_query_arg( 'add-to-cart', $xpay_product->get_id(), $url );
 
 		$product_node = array(
 			'@context'        => 'https://schema.org/',
 			'@type'           => 'Product',
-			'name'            => wp_strip_all_tags( $product->get_name() ),
-			'sku'             => $product->get_sku() ? $product->get_sku() : (string) $product->get_id(),
-			'image'           => $this->product_images( $product ),
-			'description'     => wp_strip_all_tags( $product->get_short_description() ? $product->get_short_description() : $product->get_description() ),
+			'name'            => wp_strip_all_tags( $xpay_product->get_name() ),
+			'sku'             => $xpay_product->get_sku() ? $xpay_product->get_sku() : (string) $xpay_product->get_id(),
+			'image'           => $this->product_images( $xpay_product ),
+			'description'     => wp_strip_all_tags( $xpay_product->get_short_description() ? $xpay_product->get_short_description() : $xpay_product->get_description() ),
 			'url'             => $url,
 			'offers'          => $offer,
 			'potentialAction' => array(
@@ -88,11 +85,11 @@ class Xpay_Schema {
 			),
 		);
 
-		$rating_count = $product->get_rating_count();
+		$rating_count = $xpay_product->get_rating_count();
 		if ( $rating_count > 0 ) {
 			$product_node['aggregateRating'] = array(
 				'@type'       => 'AggregateRating',
-				'ratingValue' => (float) $product->get_average_rating(),
+				'ratingValue' => (float) $xpay_product->get_average_rating(),
 				'reviewCount' => (int) $rating_count,
 			);
 		}

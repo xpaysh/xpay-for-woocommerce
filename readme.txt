@@ -6,7 +6,7 @@ Tested up to: 6.9
 Requires PHP: 7.4
 WC requires at least: 7.0
 WC tested up to: 9.4
-Stable tag: 0.1.10
+Stable tag: 0.1.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -182,6 +182,9 @@ Full data-handling disclosure: [install.xpay.sh/woocommerce/privacy.html](https:
 
 == Upgrade Notice ==
 
+= 0.1.11 =
+Plugin Check (PCP) follow-up: cleared the four remaining PrefixAllGlobals warnings. uninstall.php now runs in a closure (no top-level globals). schema renderer uses a local $xpay_product var without touching WC's template global. WooCommerce-active check uses raw option lookup + class_exists (no apply_filters on a core hook). No functional changes.
+
 = 0.1.10 =
 Plugin Check (PCP) submission-readiness pass: tested up to WP 6.9; short description trimmed to ≤150 chars; removed deprecated load_plugin_textdomain() call (WP auto-loads WP.org-hosted translations since 4.6); excluded non-canonical markdown files from the plugin zip. No functional changes.
 
@@ -203,6 +206,12 @@ Adds /?xpay_route=acp query-arg fallback for the discovery file on hosts that in
 == Changelog ==
 
 The full machine-readable changelog lives at [install.xpay.sh/woocommerce/CHANGELOG.md](https://install.xpay.sh/woocommerce/CHANGELOG.md) (Keep-a-Changelog format). The summary below is the WP.org-required mirror.
+
+= 0.1.11 =
+* Cleared 4 PCP `PrefixAllGlobals` warnings:
+  * `uninstall.php` now runs in an anonymous-closure IIFE — no top-level `$option_keys` / `$key` globals.
+  * `class-xpay-schema.php :: render_product()` uses a local `$xpay_product` and skips the `global $product` declaration entirely. Direct `wc_get_product(get_the_ID())` works on PDPs without WC's template-loop side effect.
+  * `class-xpay-plugin.php :: woocommerce_active()` uses raw `get_option('active_plugins')` + multisite merge + `class_exists('WooCommerce')` instead of filtering WP core's `active_plugins` hook. Same behavior, no false-positive.
 
 = 0.1.10 =
 * **Tested up to WordPress 6.9** (PCP flagged 6.7 as below current). No code changes — verified compatibility on a real WC 9.x install.
