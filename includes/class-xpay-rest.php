@@ -45,9 +45,21 @@ class Xpay_REST {
 
 	public function maybe_serve() {
 		$route = get_query_var( self::QUERY_VAR );
+
+		// Query-arg fallback for hosts that intercept /.well-known/ at the
+		// web-server layer (some shared hosts and sandboxes block it for ACME).
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		if ( ! $route && isset( $_GET['xpay_route'] ) ) {
+			$candidate = sanitize_key( wp_unslash( $_GET['xpay_route'] ) );
+			if ( in_array( $candidate, array( 'llms', 'acp' ), true ) ) {
+				$route = $candidate;
+			}
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
 		if ( ! $route ) {
-			// Plain-permalinks fallback: also match against REQUEST_URI directly so
-			// /llms.txt and /.well-known/agentic-commerce.json work without rewrites.
+			// Plain-permalinks + literal-URL fallback: REQUEST_URI match for
+			// hosts that don't honour our rewrite rules.
 			$path = isset( $_SERVER['REQUEST_URI'] ) ? strtok( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '?' ) : '';
 			if ( '/llms.txt' === $path ) {
 				$route = 'llms';

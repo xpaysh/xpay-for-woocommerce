@@ -11,6 +11,18 @@ release metadata at <https://install.xpay.sh/woocommerce/manifest.json>.
 
 ## [Unreleased]
 
+## [0.1.5] — 2026-05-15
+
+### Added
+
+- **Query-arg fallback for the discovery file.** Hosts that intercept `/.well-known/` at the web-server layer (some shared hosts, CDN edges, ACME setups, sandbox environments like InstaWP) now serve the agent-commerce discovery file at `/?xpay_route=acp` and the llms.txt equivalent at `/?xpay_route=llms`. Discoverable via the `Link` header on the home page.
+
+### Changed
+
+- **Post-activation redirect to Settings → xpay** now fires on any activation when the store hasn't connected yet, not only on the very first activation in DB history. Skipped on bulk-activate. Addresses InstaWP smoke-test feedback where upgrading from v0.1.3 → v0.1.4 didn't trigger the redirect.
+- Polished readme.txt Description, FAQ, and Installation sections against the top-installed WooCommerce plugins (Stripe for WooCommerce, MailPoet, Yoast SEO for WooCommerce, WooPayments) for WP.org submission readiness.
+- readme.txt header now includes `WC requires at least` and `WC tested up to` so the WordPress.org listing shows the compatibility badge.
+
 ## [0.1.4] — 2026-05-15
 
 ### Added

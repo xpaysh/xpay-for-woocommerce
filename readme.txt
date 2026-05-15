@@ -1,133 +1,212 @@
 === xpay for WooCommerce ===
-Contributors: xpay
-Tags: ai, chatgpt, agentic commerce, llms-txt, catalog feed
+Contributors: xpaysh
+Tags: woocommerce, ai, chatgpt, agentic commerce, llms
 Requires at least: 6.2
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.1.4
+WC requires at least: 7.0
+WC tested up to: 9.4
+Stable tag: 0.1.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Put your WooCommerce catalog inside ChatGPT, Claude, Gemini, and Perplexity. AI shoppers find your products, see live prices and stock, and complete the purchase through your existing checkout.
+Put your WooCommerce catalog inside ChatGPT, Claude, Gemini and Perplexity. AI shoppers see live prices and stock, and complete the purchase through your existing checkout.
 
 == Description ==
 
-Shopping has moved into AI chat. Buyers ask ChatGPT, Gemini, Claude and Perplexity what to buy long before they touch a search engine — and most WooCommerce stores are invisible in those conversations.
+**Shopping is moving into AI chat.** Buyers ask ChatGPT, Gemini, Claude and Perplexity what to buy long before they touch a search engine — and most WooCommerce stores are invisible in those conversations.
 
-xpay is the WordPress plugin that fixes that.
+**xpay for WooCommerce fixes that** with one plugin, no theme changes, no replatforming, and no new payment processor.
 
-* Publishes a public, agent-readable product feed (your full catalog, with live prices and stock)
-* Adds the `Product`, `Offer`, and `BuyAction` JSON-LD that AI shopping agents look for
-* Serves `/llms.txt` and `/.well-known/agentic-commerce.json` — the discovery files every modern AI shopper checks
-* Allows GPTBot, ClaudeBot, PerplexityBot and OAI-SearchBot through `robots.txt`
-* Lets AI agents create a pre-filled cart deeplink that lands the buyer on your existing WooCommerce checkout
-* Your existing payment gateway (Stripe, WooPayments, PayPal, Square) handles payment — payouts arrive exactly as they do for a normal online sale
+= What it does =
 
-What it doesn't do: touch your theme files, replace your checkout, hold your money, or require a new payment processor.
+* **Publishes a public, agent-readable product feed** — your full catalog with live prices and stock, hosted on xpay's CDN (no extra load on your origin).
+* **Adds AI-shopping JSON-LD** — `Product`, `Offer`, `AggregateOffer`, `BuyAction` and `ItemList` schemas on product pages, shop archive and home page. Detects existing schema from Yoast / Rank Math / WooCommerce core and only fills the gaps.
+* **Serves the agent discovery files** — `/llms.txt` and `/.well-known/agentic-commerce.json` on your own domain. These are the conventions AI shopping agents look for.
+* **Allows the right bots** — GPTBot, ChatGPT-User, OAI-SearchBot, ClaudeBot, Claude-User, Claude-SearchBot, PerplexityBot, Perplexity-User, Google-Extended, Applebot-Extended and CCBot. Never overrides your existing robots.txt rules.
+* **Cart deep-link** — AI agents create a one-click "Buy" link that pre-fills your existing WooCommerce cart and lands the buyer on your existing checkout. Orders are tagged with `_xpay_agent_attribution` so you can attribute AI-driven revenue in your existing reporting.
+* **Live inventory** — webhook-driven catalog refresh on every product / stock change (debounced 30s), plus an hourly safety-net poll.
+
+= What it doesn't do =
+
+* **It doesn't touch your checkout.** Stripe / WooPayments / PayPal / Square / whatever you already use — payment runs through them, unchanged. Your payout schedule is unchanged.
+* **It doesn't see your customers.** No buyer names, emails, addresses, IPs, payment cards, order line items, refunds, or PII of any kind passes through xpay. Ever. The plugin is non-custodial.
+* **It doesn't require a new account or contract** to start. Free until your first AI-attributable sale; pricing kicks in after that. [See pricing](https://www.xpay.sh/pricing/).
+* **It doesn't slow down your site.** The JSON-LD block is tiny and cached; the catalog feed is served from xpay's CDN, not your origin.
+
+= Five-minute install flow =
+
+1. Install the plugin from this directory or upload the zip.
+2. Activate. You'll be taken to **Settings → xpay**.
+3. Click **Connect store**. A new tab opens at app.xpay.sh, where you grant a read-only WooCommerce REST API key.
+4. Your catalog goes live on AI surfaces within about 10 minutes. The plugin's built-in audit-readiness checklist turns green as each piece confirms.
+
+= Compatibility =
+
+* WooCommerce 7.0+ on WordPress 6.2+ and PHP 7.4+.
+* Declares compatibility with WooCommerce High-Performance Order Storage (HPOS) and Cart/Checkout Blocks.
+* Works alongside Yoast SEO, Rank Math, WooCommerce Blocks, WooPayments, Stripe for WooCommerce, and the standard Storefront / Astra / Divi / Elementor themes.
+
+= Privacy and consent =
+
+* **Anonymous lifecycle telemetry is off by default.** On first activation a single admin notice asks once. Pick "No thanks" and the plugin never contacts our backend for analytics. Pick "Enable" and you can change your mind any time under **Settings → xpay → Privacy**. System-wide opt-out via `define( 'XPAY_WC_TELEMETRY', false );` in `wp-config.php`.
+* **Full data disclosure** at [install.xpay.sh/woocommerce/privacy.html](https://install.xpay.sh/woocommerce/privacy.html) — every byte the plugin sends, when it sends it, how to opt out, how to request deletion.
+
+= Source code and contributing =
+
+The plugin source is published under GPLv2-or-later. You can fork, modify, redistribute, and self-host it without paying anything. Public repo and issue tracker: [github.com/xpaysh/xpay-for-woocommerce](https://github.com/xpaysh/xpay-for-woocommerce).
 
 == Installation ==
 
-1. Upload the `xpay-for-woocommerce` folder to `/wp-content/plugins/` (or install via WP admin > Plugins > Add New).
-2. Activate the plugin.
-3. Go to **Settings → xpay** and click **Connect store**.
-4. Approve the WooCommerce REST API permissions when prompted.
-5. Your catalog goes live across AI surfaces within ~10 minutes.
+= From the WordPress.org plugin directory =
+
+1. In your WordPress admin, go to **Plugins → Add New**.
+2. Search for "xpay for WooCommerce".
+3. Click **Install Now**, then **Activate**.
+4. You'll be redirected to **Settings → xpay**. Click **Connect store**.
+5. Approve the WooCommerce REST API permissions in the new tab that opens at app.xpay.sh.
+
+= From a zip file =
+
+1. Download the latest release from [install.xpay.sh/woocommerce/latest.zip](https://install.xpay.sh/woocommerce/latest.zip).
+2. In your WordPress admin, go to **Plugins → Add New → Upload Plugin**.
+3. Choose the zip file and click **Install Now**, then **Activate**.
+4. Continue from step 4 above.
+
+= System requirements =
+
+* WordPress 6.2 or higher
+* WooCommerce 7.0 or higher
+* PHP 7.4 or higher
+* SSL (`https://`) on the store domain — required for the agent discovery files to be honored by AI surfaces
 
 == Frequently Asked Questions ==
 
 = Does this slow down my site? =
-No. The plugin emits a small `<script type="application/ld+json">` block in `<head>` and a `/llms.txt` route. Both are cached. The catalog feed is hosted on xpay's CDN, not your origin.
+
+No. The plugin emits a small `<script type="application/ld+json">` block in `<head>` on product pages, shop and home (only when no other plugin has already emitted equivalent schema). The discovery files are served from `wp-content` via a single rewrite rule with no DB query. The catalog feed itself is hosted on xpay's CDN, not your origin — so AI shoppers reading it never load your origin.
 
 = Does xpay see my customers' payment info? =
-No. Payment runs through your existing WooCommerce gateway. xpay never touches checkout.
 
-= What if I already have Yoast / Rank Math emitting Product schema? =
-xpay detects the existing schema and only adds the bits it's missing (typically `BuyAction` on PDPs and `ItemList` on the homepage).
+No. Payment runs through your existing WooCommerce gateway (Stripe / WooPayments / PayPal / Square / etc.). xpay never touches your checkout, your cards, your buyer PII, or your refund flow.
 
-= Does the plugin send any data to xpay? =
-Only what you opt in to. (a) The catalog feed sync sends your public product data (names, prices, stock, images) to xpay's CDN so AI surfaces can read it — this is required for the plugin's core function and is enabled when you click **Connect store**. (b) Optional anonymous telemetry (plugin activated, store connected, sync errors, etc.) is **off by default**. We ask once via an admin notice; you can change the choice any time under **Settings → xpay → Privacy**. No customer data, order data, or PII is ever sent. See the **External services** and **Privacy** sections below for the full list.
+= What if I already have Yoast SEO / Rank Math emitting Product schema? =
+
+xpay detects the existing schema at runtime and only adds the bits it's missing — typically `BuyAction` on product pages and `ItemList` on the homepage. No duplicate schema is emitted.
+
+= What does the plugin send to xpay's servers, and when? =
+
+Two data paths:
+
+1. **Catalog sync (required after Connect)** — your public product fields (name, description, price, currency, stock state, image URLs, categories, SKU). No customer or order data. Used to publish your catalog at `agent-feed.xpay.sh/catalog/{your-slug}.json` so AI shoppers can read it.
+2. **Anonymous lifecycle telemetry (opt-in, off by default)** — lifecycle event names (`plugin_activated`, `settings_viewed`, `resync_error`, etc.) tagged with your site URL and plugin/WP/WC/PHP versions. No customer data, no order data, no PII.
+
+Full disclosure: [install.xpay.sh/woocommerce/privacy.html](https://install.xpay.sh/woocommerce/privacy.html).
+
+= How do I uninstall cleanly? =
+
+**Plugins → Deactivate → Delete**. The bundled `uninstall.php` removes every option the plugin wrote. To also delete the catalog feed from xpay's CDN, email privacy@xpay.sh from your admin email with your merchant slug.
+
+= How do I opt out of anonymous telemetry after I already enabled it? =
+
+**Settings → xpay → Privacy → Turn off**. Or define `XPAY_WC_TELEMETRY` to `false` in `wp-config.php` for a system-wide hard disable.
+
+= My host blocks /.well-known/ — can the discovery file still work? =
+
+Yes. The plugin also serves the discovery file at `https://yoursite.com/?xpay_route=acp`. AI shoppers that respect the `Link` header find this fallback automatically. If your host is interfering, contact them — many hosts (especially those that handle ACME challenges themselves) intercept `/.well-known/*` before WordPress sees it.
+
+= I have multiple WooCommerce stores. Do I install xpay on each? =
+
+Yes. Each store gets its own merchant slug and its own catalog feed. Pricing applies per store.
+
+= Is the source code available? =
+
+Yes. GPLv2-or-later, public repo at [github.com/xpaysh/xpay-for-woocommerce](https://github.com/xpaysh/xpay-for-woocommerce). Backend source (Lambda functions that publish your feed and handle agent requests) is at [github.com/xpaysh/xpay-wc-plugin-backend](https://github.com/xpaysh/xpay-wc-plugin-backend).
+
+= How much does this cost? =
+
+Free until your first AI-attributable sale. After that, pricing starts at 1% of AI-attributable order value. See [www.xpay.sh/pricing/](https://www.xpay.sh/pricing/).
+
+= Does xpay work with WooCommerce Subscriptions / WooCommerce Bookings / WooCommerce Memberships? =
+
+The plugin publishes simple, variable, and grouped products in v0.1. Subscriptions, bookings, and memberships are on the roadmap — track progress in the GitHub repo.
+
+= I have a question that isn't answered here. =
+
+Email merchants@xpay.sh or open an issue on the GitHub repo.
 
 == External services ==
 
-This plugin connects to xpay-operated services to deliver its core function. Every endpoint is documented here.
+This plugin connects to the following xpay-operated services to deliver its core function. Every endpoint and its purpose is documented; full payload disclosure is in the [Privacy](https://install.xpay.sh/woocommerce/privacy.html) section.
 
-1. **agent-feed.xpay.sh** — The public, AI-readable catalog feed for your store at `https://agent-feed.xpay.sh/catalog/{your-slug}.json`. The plugin does **not** contact this URL directly; the xpay backend writes it from your WooCommerce REST API after you click **Connect store**. This URL is referenced from `/.well-known/agentic-commerce.json` on your domain so AI shoppers can discover it.
+1. **agent-feed.xpay.sh** — Public CDN that hosts your AI-readable catalog feed at `https://agent-feed.xpay.sh/catalog/{your-slug}.json`. The plugin does not contact this URL directly; the xpay backend writes it from your WooCommerce REST API after you click **Connect store**.
 
-2. **agent-commerce.xpay.sh** — The agent-side API that AI shopping agents call when they want to surface or buy from your products. The plugin contacts `https://agent-commerce.xpay.sh/v1/{slug}/resync` to trigger a fresh catalog ingest after a product/stock change. The plugin also receives signed cart-deeplink redirects at `/?xpay_cart=<JWT>` which lands the buyer on your existing checkout.
+2. **agent-commerce.xpay.sh** — The agent-side API that AI shopping agents call to surface and buy from your products. The plugin contacts this host at two paths: (a) `POST /v1/onboard/woocommerce/start` to register a one-time nonce when you click **Connect store**; (b) `POST /v1/merchants/{slug}/resync` to trigger a fresh catalog ingest after a product or stock change.
 
-3. **app.xpay.sh/onboard/woocommerce** — The merchant-side onboarding screen the **Connect store** button opens in a new tab. You sign in or sign up on xpay and approve the connection there.
+3. **app.xpay.sh/onboard/woocommerce** — The merchant-side onboarding page opened in a new tab when you click **Connect store**. You sign in or sign up on xpay and grant the WooCommerce REST API permission there.
 
-4. **install.xpay.sh** — Auto-update channel (manifest + zip) for sites that installed the plugin from `www.xpay.sh/merchants/woocommerce/` instead of WordPress.org. WordPress.org installs use WP.org's update system and never contact this host.
+4. **install.xpay.sh** — Auto-update channel (manifest + zip) for sites that installed the plugin from xpay's website instead of WordPress.org. WordPress.org installs use WP.org's native update system and never contact this host.
 
-5. **agent-commerce.xpay.sh/v1/events** — Optional anonymous telemetry endpoint. Disabled by default. Only contacted if you explicitly opt in. See **Privacy** below for the exact payload.
+5. **agent-commerce.xpay.sh/v1/events** — Optional anonymous telemetry. Disabled by default; only contacted if you explicitly opt in via the first-activation admin notice or **Settings → xpay → Privacy**. Full payload disclosure in the Privacy section.
 
-Terms of use: https://install.xpay.sh/woocommerce/terms.html
-Privacy policy: https://install.xpay.sh/woocommerce/privacy.html
+Terms of use: [install.xpay.sh/woocommerce/terms.html](https://install.xpay.sh/woocommerce/terms.html)
+Privacy policy: [install.xpay.sh/woocommerce/privacy.html](https://install.xpay.sh/woocommerce/privacy.html)
 
 == Privacy ==
 
 xpay is built non-custodially: we never see your customers, your orders, or any payment data. Concretely:
 
-* **What the plugin always sends** (after you click **Connect store** — required for the plugin to work): your site URL, your WooCommerce REST API consumer key/secret (so xpay can read the product catalog), and the public product fields (name, description, price, stock, image URLs, categories). No customer data. No order data. No payment data.
+* **Always sent after you click Connect store** (required for the plugin to work): your site URL, your WooCommerce REST API consumer key/secret (so xpay can read the product catalog), and your public product fields (name, description, price, stock, image URLs, categories). No customer data. No order data. No payment data.
 
-* **What the plugin optionally sends** (only if you opt in to the **anonymous telemetry** prompt — default OFF): lifecycle events tagged with your site URL, plugin version, WP version, WC version, PHP version, and locale. Event names include: `plugin_activated`, `plugin_deactivated`, `settings_viewed`, `connect_clicked`, `finalize_success`, `finalize_error`, `audit_rerun_clicked`, `audit_rerun_success`, `audit_rerun_error`, `disconnected`, `resync_success`, `resync_error`. No customer data, no order data, no PII.
+* **Optionally sent if you opt in to anonymous telemetry** (default OFF): lifecycle event names tagged with your site URL, plugin version, WP version, WC version, PHP version, locale. No customer data, no order data, no PII.
 
-* **How to opt out of anonymous telemetry:** open **Settings → xpay → Privacy** and click **Turn off**. Or define `XPAY_WC_TELEMETRY` to `false` in `wp-config.php` for a system-wide hard disable.
+* **Opt out of anonymous telemetry**: **Settings → xpay → Privacy → Turn off**. Or define `XPAY_WC_TELEMETRY` to `false` in `wp-config.php` for a system-wide hard disable that overrides any UI choice.
 
-* **How to delete data:** Click **Disconnect** under **Settings → xpay**, then deactivate and delete the plugin. The plugin's `uninstall.php` removes its local options. To request deletion of catalog data from xpay's CDN, email privacy@xpay.sh.
+* **Request data deletion**: email privacy@xpay.sh from your admin email with your merchant slug. We process within 7 business days.
+
+Full data-handling disclosure: [install.xpay.sh/woocommerce/privacy.html](https://install.xpay.sh/woocommerce/privacy.html).
 
 == Screenshots ==
 
-1. One-click connect — your existing checkout stays untouched.
+1. One-click connect — your existing WooCommerce checkout stays untouched.
 2. Eight audit checks, all green: catalog feed, JSON-LD, llms.txt, well-known, robots, BuyAction, cart deeplink, fresh inventory.
-3. Your catalog, live on agent-feed.xpay.sh — real prices, real stock.
-4. AI chat → your existing checkout: ChatGPT/Claude surface your product, buyer lands on your cart pre-filled.
-5. JSON-LD on every PDP including BuyAction — view-source proof.
+3. Your catalog, live on agent-feed.xpay.sh — real prices, real stock, refreshed within 30 seconds of any product change.
+4. AI chat → your existing checkout: ChatGPT or Claude surfaces your product, buyer lands on your cart pre-filled.
+5. JSON-LD on every product page including BuyAction — view-source proof.
 
 == Upgrade Notice ==
 
-= 0.1.4 =
-First-activation redirect into Settings → xpay (no more wondering "what now?"). Declares compatibility with WooCommerce High-Performance Order Storage (HPOS) + Cart/Checkout Blocks. Privacy + Terms pages live at install.xpay.sh/woocommerce/{privacy,terms}.html. Plugin homepage moved to www.xpay.sh/merchants/woocommerce/.
-
-= 0.1.3 =
-Code quality pass for WordPress.org submission: PHPCS WordPress-standard clean, translation-ready (.pot), bundled banner / icon / screenshots. No functional changes.
-
-= 0.1.2 =
-Plugin slug renamed to `xpay-for-woocommerce` for WordPress.org submission compliance. Anonymous lifecycle telemetry is now opt-in (was opt-out). Reactivate the plugin after upgrade and choose your preference in the admin notice or under Settings → xpay → Privacy.
+= 0.1.5 =
+Adds /?xpay_route=acp query-arg fallback for the discovery file on hosts that intercept /.well-known/. Post-activation redirect now also fires for upgrades where the store hasn't connected yet. WC HPOS compatibility declared. Privacy + terms pages live.
 
 == Changelog ==
 
-The full machine-readable changelog lives at <https://install.xpay.sh/woocommerce/CHANGELOG.md>
-(Keep-a-Changelog format). The summary below is the WP.org-required mirror.
+The full machine-readable changelog lives at [install.xpay.sh/woocommerce/CHANGELOG.md](https://install.xpay.sh/woocommerce/CHANGELOG.md) (Keep-a-Changelog format). The summary below is the WP.org-required mirror.
+
+= 0.1.5 =
+* Query-arg fallback for the discovery file: hosts that intercept `/.well-known/` (some shared hosts, CDN edges, ACME setups) can now serve the discovery file at `/?xpay_route=acp`. Discoverable via the `Link` header on the home page.
+* Post-activation redirect to **Settings → xpay** now fires on any activation when the store hasn't connected yet, not only on the very first activation. Skipped on bulk-activate.
 
 = 0.1.4 =
-* Activated → Settings: first-activation now redirects merchants straight to Settings → xpay so the next click is "Connect store". Skipped on bulk-activate.
-* HPOS + Cart/Checkout Blocks compatibility declared via `before_woocommerce_init` → `FeaturesUtil::declare_compatibility()`. Silences the WC admin notice "this plugin is incompatible with currently enabled features." We never read or write WC orders directly, so HPOS is inherent.
-* Privacy + Terms pages published at https://install.xpay.sh/woocommerce/privacy.html and https://install.xpay.sh/woocommerce/terms.html — fully documented data paths, opt-out steps, deletion request flow.
-* Plugin URI → https://www.xpay.sh/merchants/woocommerce/. Author URI → https://www.xpay.sh.
-* In-plugin "What gets sent" link now points to the real privacy page (was 404).
+* WC HPOS + Cart/Checkout Blocks compatibility declared.
+* First-activation redirect to Settings → xpay.
+* Privacy + Terms pages at install.xpay.sh/woocommerce/{privacy,terms}.html.
+* Plugin URI: xpay.sh/sellers/woocommerce → www.xpay.sh/merchants/woocommerce/.
 
 = 0.1.3 =
-* WordPress-standard PHPCS pass: 0 errors / 1 cosmetic warning (down from 143/71). Real findings fixed: unslash + sanitize on `$_SERVER['REQUEST_URI']`, escape on /llms.txt output, short-ternary removal, Yoda conditions, nonce-verification annotations on the cart-deeplink + ajax beacon paths (both authenticated by signed JWT / capability check respectively).
-* Added `phpcs.xml.dist` ruleset (WordPress standard, custom-cap allowlist for `manage_woocommerce`, text-domain pinned to `xpay-for-woocommerce`).
-* Added `languages/xpay-for-woocommerce.pot` (generated via `wp i18n make-pot`).
-* Added WP.org `assets/`: `banner-772x250.png`, `banner-1544x500.png`, `icon-128x128.png`, `icon-256x256.png`, `screenshot-1.png` through `screenshot-5.png`. Excluded from the plugin zip (live in SVN `assets/` after WP.org approval).
+* PHPCS WordPress-standard clean: 0 errors / 1 cosmetic warning.
+* `phpcs.xml.dist` ruleset added.
+* `languages/xpay-for-woocommerce.pot` generated.
+* WP.org listing assets (banner / icon / 5 screenshots).
 
 = 0.1.2 =
-* Renamed plugin slug from `xpay-woocommerce` to `xpay-for-woocommerce` to comply with WordPress.org Guideline 17 (trademark — non-WooCommerce vendors cannot have a slug starting with "woocommerce").
-* Anonymous telemetry is now **opt-in** (was opt-out) — required for WordPress.org Guideline 7 (informed consent for external server contact). First-activation admin notice asks for consent; default is off.
-* Added Settings → xpay → Privacy toggle so merchants can change their telemetry choice any time.
-* Added `== External services ==` and `== Privacy ==` sections to readme per Guideline 6.
+* Slug renamed `xpay-woocommerce` → `xpay-for-woocommerce` (Guideline 17).
+* Telemetry now opt-in via first-activation admin notice; default OFF (Guideline 7).
+* Settings → xpay → Privacy toggle.
+* readme.txt External services and Privacy sections added.
 
 = 0.1.1 =
-* Fire-and-forget lifecycle telemetry: activate, deactivate, settings_viewed, connect_clicked, finalize_success/error, audit_rerun_success/error, disconnected, resync_success/error.
+* Fire-and-forget lifecycle telemetry pipe (was always-opt-out; reworked to opt-in in 0.1.2).
 
 = 0.1.0 =
-* WordPress plugin scaffold targeting WC 7.0+ / WP 6.2+ / PHP 7.4+.
-* Serves /llms.txt and /.well-known/agentic-commerce.json on the merchant's domain.
-* Injects Product / Offer / BuyAction / ItemList JSON-LD on PDP, shop, and homepage; detects and respects pre-existing schemas from Yoast / Rank Math / WC core.
-* robots.txt allowlist for GPTBot, ClaudeBot, PerplexityBot, OAI-SearchBot, Google-Extended and similar (never overrides explicit merchant blocks).
-* Cart-deeplink handler (`?xpay_cart=`) populates WC()->cart from a signed JWT and redirects to wc_get_checkout_url(); orders tagged with _xpay_agent_attribution meta.
-* Webhook-driven catalog resync on product / stock changes, debounced 30s.
-* Admin page at Settings → xpay: connect flow, status panel, re-run audit, audit-readiness checklist.
-* Optional [xpay-buy] shortcode + Gutenberg block (off by default).
+* Initial release. WP plugin scaffold; /llms.txt and /.well-known/agentic-commerce.json; JSON-LD on PDP / shop / home; robots.txt allowlist; cart-deeplink handler; webhook-driven resync; admin page with connect flow and audit-readiness checklist.

@@ -87,9 +87,15 @@ class Xpay_Plugin {
 		// Force a rewrite-rule flush after we register routes on next init.
 		update_option( 'xpay_wc_flush_rewrites', 1 );
 
-		// Mark so we redirect to Settings → xpay on the next admin page load.
-		if ( ! get_option( 'xpay_wc_first_activated_at' ) ) {
+		$first_time = ! (bool) get_option( 'xpay_wc_first_activated_at' );
+		if ( $first_time ) {
 			update_option( 'xpay_wc_first_activated_at', time() );
+		}
+
+		// Redirect to Settings → xpay on the very next admin page load if the
+		// merchant hasn't connected yet. Covers both fresh installs and upgrades
+		// where the merchant never got around to connecting.
+		if ( ! self::is_connected() ) {
 			set_transient( 'xpay_wc_post_activation_redirect', 1, 60 );
 		}
 
@@ -97,7 +103,7 @@ class Xpay_Plugin {
 			Xpay_Telemetry::track(
 				'plugin_activated',
 				array(
-					'first_time' => ! (bool) get_option( 'xpay_wc_first_activated_at' ),
+					'first_time' => $first_time,
 				)
 			);
 		}
